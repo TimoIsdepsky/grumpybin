@@ -8,7 +8,7 @@ TRIG_PIN     = 23       # GPIO-Pin für TRIG vom HC-SR04
 ECHO_PIN     = 24       # GPIO-Pin für ECHO vom HC-SR04
 SOL_PIN      = 17       # GPIO für Solenoid
 DIST_THRESHOLD_CM = 40  # Abstand in cm, ab dem "Person erkannt" gilt
-AUDIO_FILE   = 'alert.wav'
+AUDIO_FILE   = 'test.mp3'
 RATTLE_INTERVAL = 0.1   # Sekunden
 RATTLE_PAUSE    = 0.4   # Sekunden
 
