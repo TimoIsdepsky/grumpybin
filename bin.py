@@ -24,28 +24,13 @@ pygame.mixer.init()
 pygame.mixer.music.set_endevent()
 
 # --- Messung Entfernung ---
-def measure_distance():
-    GPIO.output(TRIG_PIN, False)
-    time.sleep(0.05)
-
-    GPIO.output(TRIG_PIN, True)
-    time.sleep(0.00001)
-    GPIO.output(TRIG_PIN, False)
-
-    start = time.time()
-    stop = time.time()
-
-    # Warte auf Echo-Anfang
-    while GPIO.input(ECHO_PIN) == 0:
-        start = time.time()
+def detect_activation():
+    if GPIO.input(ECHO_PIN) == 0:
+        return False
 
     # Warte auf Echo-Ende
-    while GPIO.input(ECHO_PIN) == 1:
-        stop = time.time()
-
-    elapsed = stop - start
-    distance = (elapsed * 34300) / 2  # Schallgeschwindigkeit: 343 m/s
-    return distance
+    if GPIO.input(ECHO_PIN) == 1:
+        return True
 
 # --- Aktionen ---
 stop_event = threading.Event()
@@ -79,14 +64,12 @@ try:
     cooldown = 5  # Sekunden: Zeit zwischen zwei Aktivierungen
 
     while True:
-        distance = measure_distance()
-        print(f"Gemessene Distanz: {distance:.1f} cm")
+        activation = detect_activation()
+        print(f"activate: {activation}")
 
-        if distance < DIST_THRESHOLD_CM:
-            if time.time() - last_trigger_time > cooldown:
-                print("👀 Person erkannt! Aktiviere Reaktion.")
-                last_trigger_time = time.time()
-                trigger_actions()
+        if activation:
+            print("👀 Person erkannt! Aktiviere Reaktion.")
+            trigger_actions()
         time.sleep(0.5)
 
 except KeyboardInterrupt:
