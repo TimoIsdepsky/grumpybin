@@ -3,14 +3,15 @@ import time
 import threading
 import pygame
 import pyttsx3
+import random
 
 # --- Konfiguration ---
-ECHO_PIN     = 23       # GPIO-Pin für ECHO vom HC-SR04
-SOL_PIN      = 24       # GPIO für Solenoid
+ECHO_PIN = 23       # GPIO-Pin für ECHO vom HC-SR04
+SOL_PIN = 24       # GPIO für Solenoid
 DIST_THRESHOLD_CM = 40  # Abstand in cm, ab dem "Person erkannt" gilt
-AUDIO_FILE   = 'test.mp3'
+AUDIO_FILE = 'test.mp3'
 RATTLE_INTERVAL = 0.1   # Sekunden
-RATTLE_PAUSE    = 0.4   # Sekunden
+RATTLE_PAUSE = 0.4   # Sekunden
 
 # --- Setup ---
 GPIO.setmode(GPIO.BCM)
@@ -23,6 +24,8 @@ pygame.mixer.init()
 pygame.mixer.music.set_endevent()
 
 # --- Messung Entfernung ---
+
+
 def detect_activation():
     if GPIO.input(ECHO_PIN) == 0:
         return False
@@ -31,22 +34,30 @@ def detect_activation():
     if GPIO.input(ECHO_PIN) == 1:
         return True
 
+
 # --- Aktionen ---
 stop_event = threading.Event()
 
+
 def rattle_solenoid():
     for _ in range(6):
-        if stop_event.is_set(): break
+        if stop_event.is_set():
+            break
         GPIO.output(SOL_PIN, GPIO.HIGH)
         time.sleep(RATTLE_INTERVAL)
         GPIO.output(SOL_PIN, GPIO.LOW)
         time.sleep(RATTLE_PAUSE)
 
+
 def play_line():
     engine = pyttsx3.init()
     with open("./lines", "r") as voice_lines:
-        engine.say("I will speak this text")
+        line_list: list = voice_lines.readlines()
+        rng = random.Random().randint(0, line_list.__len__())
+        engine.say(line_list[rng])
     engine.runAndWait()
+    engine.stop()
+
 
 def play_audio():
     pygame.mixer.music.load(AUDIO_FILE)
@@ -57,10 +68,12 @@ def play_audio():
             break
         time.sleep(0.1)
 
+
 def trigger_actions():
     stop_event.clear()
     threading.Thread(target=rattle_solenoid, daemon=True).start()
     threading.Thread(target=play_line, daemon=True).start()
+
 
 # --- Hauptschleife ---
 try:
