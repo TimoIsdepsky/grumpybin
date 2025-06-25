@@ -53,7 +53,7 @@ def play_line():
     engine = pyttsx3.init()
     with open("./lines", "r") as voice_lines:
         line_list: list = voice_lines.readlines()
-        rng = random.Random().randint(0, line_list.__len__())
+        rng = random.Random().randint(0, line_list.__len__() - 1)
         engine.say(line_list[rng])
     engine.runAndWait()
     engine.stop()
