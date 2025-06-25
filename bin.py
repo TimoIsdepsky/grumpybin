@@ -24,11 +24,11 @@ pygame.mixer.music.set_endevent()
 # --- Messung Entfernung ---
 def detect_activation():
     if GPIO.input(ECHO_PIN) == 0:
-        return True
+        return False
 
     # Warte auf Echo-Ende
     if GPIO.input(ECHO_PIN) == 1:
-        return False
+        return True
 
 # --- Aktionen ---
 stop_event = threading.Event()
