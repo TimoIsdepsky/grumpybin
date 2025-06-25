@@ -44,7 +44,7 @@ def rattle_solenoid():
 
 def play_line():
     engine = pyttsx3.init()
-    with open("~/grumpybin/lines", "r") as voice_lines:
+    with open("./lines", "r") as voice_lines:
         engine.say("I will speak this text")
     engine.runAndWait()
 
