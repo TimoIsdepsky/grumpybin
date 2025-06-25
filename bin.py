@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import pygame
+import pyttsx3
 
 # --- Konfiguration ---
 ECHO_PIN     = 23       # GPIO-Pin für ECHO vom HC-SR04
@@ -41,6 +42,12 @@ def rattle_solenoid():
         GPIO.output(SOL_PIN, GPIO.LOW)
         time.sleep(RATTLE_PAUSE)
 
+def play_line():
+    with open(lines) as voice_lines:
+        engine = pyttsx3.init()
+        engine.say("I will speak this text")
+        engine.runAndWait()
+
 def play_audio():
     pygame.mixer.music.load(AUDIO_FILE)
     pygame.mixer.music.play()
@@ -53,7 +60,7 @@ def play_audio():
 def trigger_actions():
     stop_event.clear()
     threading.Thread(target=rattle_solenoid, daemon=True).start()
-    threading.Thread(target=play_audio, daemon=True).start()
+    threading.Thread(target=play_line, daemon=True).start()
 
 # --- Hauptschleife ---
 try:
