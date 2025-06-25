@@ -43,10 +43,10 @@ def rattle_solenoid():
         time.sleep(RATTLE_PAUSE)
 
 def play_line():
+    engine = pyttsx3.init()
     with open("~/grumpybin/lines", "r") as voice_lines:
-        engine = pyttsx3.init()
         engine.say("I will speak this text")
-        engine.runAndWait()
+    engine.runAndWait()
 
 def play_audio():
     pygame.mixer.music.load(AUDIO_FILE)
