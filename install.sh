@@ -55,6 +55,16 @@ else
     echo "pip3 is already installed."
 fi
 
+# Install python3-venv if not installed
+if ! python3 -m venv --help &> /dev/null; then
+    echo "python3-venv not found. Installing python3-venv..."
+    sudo apt-get update
+    sudo apt-get install -y python3-venv
+    echo "python3-venv installed successfully."
+else
+    echo "python3-venv is already installed."
+fi
+
 # install pyttsx3 dependencies
 sudo apt install -y espeak ffmpeg libespeak1
 
