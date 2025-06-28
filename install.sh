@@ -87,7 +87,7 @@ if [ ! -f "$SERVICE_FILE" ]; then
 Description=GrumpyBin Service
 After=network.target
 [Service]
-ExecStart=/usr/local/bin/grumpybin/bin/python /usr/local/bin/grumpybin/grumpybin.py
+ExecStart=/usr/local/bin/grumpybin/venv/bin/python /usr/local/bin/grumpybin/grumpybin.py
 WorkingDirectory=/usr/local/bin/grumpybin
 Restart=always
 User=root
