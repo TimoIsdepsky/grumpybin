@@ -25,9 +25,15 @@ else
     echo "User is already in the docker group."
 fi
 
-# Start the docker containers
-echo "Starting Docker containers..."
-docker-compose up -d
+# Install docker-compose if not installed
+if ! command -v docker-compose &> /dev/null; then
+    echo "Docker Compose not found. Installing Docker Compose..."
+    sudo apt-get update
+    sudo apt-get install -y docker-compose
+    echo "Docker Compose installed successfully."
+else
+    echo "Docker Compose is already installed."
+fi
 
 # Install python3 if not installed
 if ! command -v python3 &> /dev/null; then
@@ -96,6 +102,10 @@ sudo mkdir -p /usr/local/bin/grumpybin
 sudo cp ./lines /usr/local/bin/grumpybin/lines
 sudo cp ./speech.py /usr/local/bin/grumpybin/speech.py
 sudo cp ./grumpybin.py /usr/local/bin/grumpybingrumpybin.py
+
+# Start the docker containers
+echo "Starting Docker containers..."
+docker-compose up -d
 
 # enable systemd service
 sudo systemctl daemon-reload
