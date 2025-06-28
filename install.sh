@@ -4,6 +4,11 @@ set -e
 
 SERVICE_FILE="/etc/systemd/system/grumpybin.service"
 
+# Update and upgrade the system
+echo "Updating and upgrading the system..."
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
 # Install docker if not installed
 if ! command -v docker &> /dev/null; then
     echo "Docker not found. Installing Docker..."
@@ -26,10 +31,10 @@ else
 fi
 
 # Install docker-compose if not installed
-if ! command -v docker-compose &> /dev/null; then
+if ! command -v "docker compose" &> /dev/null; then
     echo "Docker Compose not found. Installing Docker Compose..."
     sudo apt-get update
-    sudo apt-get install -y docker-compose
+    sudo apt-get install -y docker-compose-v2
     echo "Docker Compose installed successfully."
 else
     echo "Docker Compose is already installed."
@@ -55,18 +60,27 @@ else
     echo "pip3 is already installed."
 fi
 
+# Install python3-venv
+echo "Installing python3-venv..."
+sudo apt-get update
+sudo apt-get install -y python3.12-venv
+echo "python3-venv installed successfully."
+
+# install pyttsx3 dependencies
+sudo apt install -y espeak ffmpeg libespeak1
+
 # Create a virtual environment in /usr/local/bin/grumpybin if it doesn't exist
-if [ ! -d "/usr/local/bin/grumpybin" ]; then
+if [ ! -d "/usr/local/bin/grumpybin/venv" ]; then
     echo "Creating virtual environment in /usr/local/bin/grumpybin..."
-    sudo mkdir -p /usr/local/bin/grumpybin
-    python3 -m venv /usr/local/bin/grumpybin
+    sudo mkdir -p /usr/local/bin/grumpybin/venv
+    python3 -m venv /usr/local/bin/grumpybin/venv
     echo "Virtual environment created successfully."
 else
     echo "Virtual environment already exists in /usr/local/bin/grumpybin."
 fi
 
 # Activate the virtual environment
-source /usr/local/bin/grumpybin/bin/activate
+source /usr/local/bin/grumpybin/venv/bin/activate
 
 # Upgrade pip to the latest version
 echo "Upgrading pip to the latest version..."
@@ -84,7 +98,7 @@ if [ ! -f "$SERVICE_FILE" ]; then
 Description=GrumpyBin Service
 After=network.target
 [Service]
-ExecStart=/usr/local/bin/grumpybin/bin/python /usr/local/bin/grumpybin/grumpybin.py
+ExecStart=/usr/local/bin/grumpybin/venv/bin/python /usr/local/bin/grumpybin/bin.py
 WorkingDirectory=/usr/local/bin/grumpybin
 Restart=always
 User=root
@@ -98,14 +112,14 @@ else
 fi
 
 # move needed python files to /usr/local/bin
-sudo mkdir -p /usr/local/bin/grumpybin
-sudo cp ./lines /usr/local/bin/grumpybin/lines
-sudo cp ./speech.py /usr/local/bin/grumpybin/speech.py
-sudo cp ./grumpybin.py /usr/local/bin/grumpybingrumpybin.py
+sudo mkdir -p /usr/local/bin/grumpybin/
+sudo cp ./lines /usr/local/bin/grumpybin/
+sudo cp ./speech.py /usr/local/bin/grumpybin/
+sudo cp ./bin.py /usr/local/bin/grumpybin/
 
 # Start the docker containers
 echo "Starting Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 # enable systemd service
 sudo systemctl daemon-reload

@@ -9,12 +9,23 @@ logger = logging.getLogger(__name__)
 # --- Audio Setup ---
 pygame.mixer.init()
 pygame.mixer.music.set_endevent()
+pygame.init()
+display = pygame.display.set_mode((100, 100))
 
 # --- Aktionen ---
 stop_event = threading.Event()
 
 def detect_activation():
-    return pygame.key.get_pressed()[pygame.K_k]
+    logger.debug("Warte auf Aktivierung...")
+    events = pygame.event.get()
+    logger.debug(f"Erkannte Events: {events}")
+    for event in events:
+        logger.debug(f"Event erkannt: {event}")
+        if event.type == pygame.KEYDOWN:
+            logger.debug(f"Tastendruck erkannt: {event.key}")
+            if event.key == pygame.K_k:
+                logger.info("Aktivierung erkannt durch Tastendruck.")
+                return True
 
 def trigger_actions():
     stop_event.clear()
@@ -42,6 +53,6 @@ def main():
         logger.info("GPIO aufgeräumt.")
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logger.info("Starte Hauptprogramm...")
     main()
