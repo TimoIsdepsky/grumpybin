@@ -97,7 +97,7 @@ if [ ! -f "$SERVICE_FILE" ]; then
 Description=GrumpyBin Service
 After=network.target
 [Service]
-ExecStart=/usr/local/bin/grumpybin/venv/bin/python /usr/local/bin/grumpybin/grumpybin.py
+ExecStart=/usr/local/bin/grumpybin/venv/bin/python /usr/local/bin/grumpybin/bin.py
 WorkingDirectory=/usr/local/bin/grumpybin
 Restart=always
 User=root
@@ -114,7 +114,7 @@ fi
 sudo mkdir -p /usr/local/bin/grumpybin/
 sudo cp ./lines /usr/local/bin/grumpybin/
 sudo cp ./speech.py /usr/local/bin/grumpybin/
-sudo cp ./grumpybin.py /usr/local/bin/grumpybin/
+sudo cp ./bin.py /usr/local/bin/grumpybin/
 
 # Start the docker containers
 echo "Starting Docker containers..."
