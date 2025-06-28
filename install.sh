@@ -98,10 +98,10 @@ else
 fi
 
 # move needed python files to /usr/local/bin
-sudo mkdir -p /usr/local/bin/grumpybin
-sudo cp ./lines /usr/local/bin/grumpybin/lines
-sudo cp ./speech.py /usr/local/bin/grumpybin/speech.py
-sudo cp ./grumpybin.py /usr/local/bin/grumpybingrumpybin.py
+sudo mkdir -p /usr/local/bin/grumpybin/
+sudo cp ./lines /usr/local/bin/grumpybin/
+sudo cp ./speech.py /usr/local/bin/grumpybin/
+sudo cp ./grumpybin.py /usr/local/bin/grumpybin/
 
 # Start the docker containers
 echo "Starting Docker containers..."
