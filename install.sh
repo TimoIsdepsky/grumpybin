@@ -59,7 +59,7 @@ fi
 if ! python3 -m venv --help &> /dev/null; then
     echo "python3-venv not found. Installing python3-venv..."
     sudo apt-get update
-    sudo apt-get install -y python3-venv
+    sudo apt-get install -y python3.12-venv
     echo "python3-venv installed successfully."
 else
     echo "python3-venv is already installed."
