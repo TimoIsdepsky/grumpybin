@@ -55,18 +55,21 @@ else
     echo "pip3 is already installed."
 fi
 
+# install pyttsx3 dependencies
+sudo apt install -y espeak ffmpeg libespeak1
+
 # Create a virtual environment in /usr/local/bin/grumpybin if it doesn't exist
-if [ ! -d "/usr/local/bin/grumpybin" ]; then
+if [ ! -d "/usr/local/bin/grumpybin/venv" ]; then
     echo "Creating virtual environment in /usr/local/bin/grumpybin..."
-    sudo mkdir -p /usr/local/bin/grumpybin
-    python3 -m venv /usr/local/bin/grumpybin
+    sudo mkdir -p /usr/local/bin/grumpybin/venv
+    python3 -m venv /usr/local/bin/grumpybin/venv
     echo "Virtual environment created successfully."
 else
     echo "Virtual environment already exists in /usr/local/bin/grumpybin."
 fi
 
 # Activate the virtual environment
-source /usr/local/bin/grumpybin/bin/activate
+source /usr/local/bin/grumpybin/venv/bin/activate
 
 # Upgrade pip to the latest version
 echo "Upgrading pip to the latest version..."
