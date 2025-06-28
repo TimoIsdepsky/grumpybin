@@ -4,6 +4,11 @@ set -e
 
 SERVICE_FILE="/etc/systemd/system/grumpybin.service"
 
+# Update and upgrade the system
+echo "Updating and upgrading the system..."
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
 # Install docker if not installed
 if ! command -v docker &> /dev/null; then
     echo "Docker not found. Installing Docker..."
@@ -29,7 +34,7 @@ fi
 if ! command -v docker-compose &> /dev/null; then
     echo "Docker Compose not found. Installing Docker Compose..."
     sudo apt-get update
-    sudo apt-get install -y docker-compose
+    sudo apt-get install -y docker-compose-v2
     echo "Docker Compose installed successfully."
 else
     echo "Docker Compose is already installed."
@@ -118,7 +123,7 @@ sudo cp ./bin.py /usr/local/bin/grumpybin/
 
 # Start the docker containers
 echo "Starting Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 # enable systemd service
 sudo systemctl daemon-reload
