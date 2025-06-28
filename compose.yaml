@@ -1,0 +1,45 @@
+services:
+  mqtt-client:
+    image: timoisdepsky/grumpybin-mqtt:latest
+    container_name: mqtt-client
+    restart: unless-stopped
+    volumes:
+      - ./lines:/app/lines # Change host file to /usr/local/bin/grumpybin/lines if using install script
+    environment:
+      - MQTT_BROKER=mqtt-broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=grumpybin/lines
+      - LOG_LEVEL=DEBUG # Set to DEBUG for detailed logs, INFO for less verbose
+    networks:
+      - mqtt-network
+    depends_on:
+      - mqtt-broker
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mqtt/mosquitto_data:/mosquitto/data
+      - ./mqtt/mosquitto_config:/mosquitto/config
+      - ./mqtt/mosquitto_log:/mosquitto/log
+    networks:
+      - mqtt-network
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: grumpybin
+      POSTGRES_PASSWORD: grumpybin
+      POSTGRES_DB: grumpybin_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - mqtt-network
+
+networks:
+  mqtt-network:
+    driver: bridge

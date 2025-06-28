@@ -2,8 +2,11 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import pygame
-import pyttsx3
-import random
+import logging
+from speech import play_line
+
+logger = logging.getLogger(__name__)
+logger.level = logging.INFO
 
 # --- Konfiguration ---
 ECHO_PIN = 23       # GPIO-Pin für ECHO vom HC-SR04
@@ -48,17 +51,6 @@ def rattle_solenoid():
         GPIO.output(SOL_PIN, GPIO.LOW)
         time.sleep(RATTLE_PAUSE)
 
-
-def play_line():
-    engine = pyttsx3.init()
-    with open("./lines", "r") as voice_lines:
-        line_list: list = voice_lines.readlines()
-        rng = random.Random().randint(0, line_list.__len__() - 1)
-        engine.say(line_list[rng])
-    engine.runAndWait()
-    engine.stop()
-
-
 def play_audio():
     pygame.mixer.music.load(AUDIO_FILE)
     pygame.mixer.music.play()
@@ -81,20 +73,24 @@ try:
     last_trigger_time = 0
     cooldown = 5  # Sekunden: Zeit zwischen zwei Aktivierungen
 
-    while True:
-        activation = detect_activation()
-        print(f"activate: {activation}")
+    global active
+    active = False
 
-        if activation:
-            print("👀 Person erkannt! Aktiviere Reaktion.")
+    while True:
+        activate = detect_activation()
+        logger.debug(f"Aktiviere: {activate}")
+
+        if activate and not active:
+            active = True
+            logger.info("👀 Person erkannt! Aktiviere Reaktion.")
             trigger_actions()
         time.sleep(0.5)
 
 except KeyboardInterrupt:
-    print("Beendet durch Benutzer.")
+    logger.info("Beendet durch Benutzer.")
 
 finally:
     stop_event.set()
     pygame.mixer.music.stop()
     GPIO.cleanup()
-    print("GPIO aufgeräumt.")
+    logger.info("GPIO aufgeräumt.")
