@@ -44,19 +44,19 @@ def disambiguate(msg: Message):
     if msg.method == MessageMethod.ADD:
         line_id = storage_backend.add_line(msg.line)
         logger.info(f"Added line {line_id}: {msg.line}")
-        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'Added line: {line_id}: {msg.line}'), key=line_id).to_json()}")
+        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{line_id}: {msg.line}'), key=line_id).to_json()}")
     elif msg.method == MessageMethod.EDIT:
         line_id = storage_backend.modify_line(msg.key, msg.line)
-        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'Modified line: {line_id}: {msg.line}'), key=line_id).to_json()}")
+        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{line_id}: {msg.line}'), key=line_id).to_json()}")
     elif msg.method == MessageMethod.DELETE:
         line_id = storage_backend.delete_line(msg.key)
-        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'Deleted line: {line_id}'), key=line_id).to_json()}")
+        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{line_id}'), key=line_id).to_json()}")
     elif msg.method == MessageMethod.GET:
         lines = storage_backend.get_lines()
-        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'Current lines: {lines}')).to_json()}")
+        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{lines}')).to_json()}")
     elif msg.method == MessageMethod.NONE:
         logger.info(f"Received message without method: {msg.line}")
-        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'Received message: {msg.line}')).to_json()}")
+        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{msg.line}')).to_json()}")
     else:
         logger.error(f"Unknown message type: {msg.method}")
 
