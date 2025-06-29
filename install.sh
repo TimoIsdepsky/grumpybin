@@ -67,7 +67,7 @@ fi
 if [ ! -d "/usr/local/bin/grumpybin/venv" ]; then
     echo "Creating virtual environment in /usr/local/bin/grumpybin..."
     sudo mkdir -p /usr/local/bin/grumpybin/venv
-    python3 -m venv /usr/local/bin/grumpybin/venv
+    python3.10 -m venv /usr/local/bin/grumpybin/venv
     echo "Virtual environment created successfully."
 else
     echo "Virtual environment already exists in /usr/local/bin/grumpybin."
