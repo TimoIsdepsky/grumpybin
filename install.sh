@@ -40,14 +40,17 @@ else
     echo "Docker Compose is already installed."
 fi
 
-# Install python3 if not installed
-if ! command -v python3 &> /dev/null; then
-    echo "Python3 not found. Installing Python3..."
+# Install python3.10 if not installed
+if ! command -v python3.10 &> /dev/null; then
+    echo "Python3.10 not found. Installing Python3..."
     sudo apt-get update
-    sudo apt-get install -y python3 python3-venv
-    echo "Python3 installed successfully."
+    sudo apt install -y software-properties-common
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt update
+    sudo apt install -y python3.10 python3.10-venv python3.10-dev
+    echo "Python3.10 installed successfully."
 else
-    echo "Python3 is already installed."
+    echo "Python3.10 is already installed."
 fi
 
 # Install python3-pip if not installed
@@ -59,15 +62,6 @@ if ! command -v pip3 &> /dev/null; then
 else
     echo "pip3 is already installed."
 fi
-
-# Install python3-venv
-echo "Installing python3-venv..."
-sudo apt-get update
-sudo apt-get install -y python3.12-venv
-echo "python3-venv installed successfully."
-
-# install pyttsx3 dependencies
-sudo apt install -y espeak ffmpeg libespeak1
 
 # Create a virtual environment in /usr/local/bin/grumpybin if it doesn't exist
 if [ ! -d "/usr/local/bin/grumpybin/venv" ]; then

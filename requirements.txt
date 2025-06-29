@@ -1,3 +1,4 @@
-RPi.GPIO
+RPi.GPIO; platform_system == "Linux"
 pygame
-pyttsx3
+sounddevice
+edge_tts

@@ -53,7 +53,7 @@ def disambiguate(msg: Message):
         mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{line_id}'), key=line_id).to_json()}")
     elif msg.method == MessageMethod.GET:
         lines = storage_backend.get_lines()
-        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=json.dumps(f'{lines}')).to_json()}")
+        mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=json.dumps(lines)).to_json()}")
     elif msg.method == MessageMethod.NONE:
         logger.info(f"Received message without method: {msg.line}")
         mqtt_publish(f"{Message(type=MessageType.RESPONSE, status=MessageStatus.SUCCESS, line=str(f'{msg.line}')).to_json()}")

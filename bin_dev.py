@@ -2,9 +2,12 @@ import time
 import threading
 import pygame
 import logging
-from speech import play_line
+from speech import play_edge_tts
+from storage import FileStorageBackend
 
 logger = logging.getLogger(__name__)
+
+is_active = False
 
 # --- Audio Setup ---
 pygame.mixer.init()
@@ -28,8 +31,15 @@ def detect_activation():
                 return True
 
 def trigger_actions():
-    stop_event.clear()
-    threading.Thread(target=play_line, daemon=True).start()
+    global is_active
+    if not is_active:
+        is_active = True
+        stop_event.clear()
+        def wrapped_play():
+            play_edge_tts()
+            global is_active
+            is_active = False
+        threading.Thread(target=wrapped_play, daemon=True).start()
 
 def main():
     try:

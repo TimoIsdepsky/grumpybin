@@ -1,6 +1,6 @@
 services:
   mqtt-client:
-    image: timoisdepsky/grumpybin-mqtt:latest
+    build: ./
     container_name: mqtt-client
     restart: unless-stopped
     volumes:
@@ -9,7 +9,7 @@ services:
       - MQTT_BROKER=mqtt-broker
       - MQTT_PORT=1883
       - MQTT_TOPIC=grumpybin/lines
-      - LOG_LEVEL=DEBUG # Set to DEBUG for detailed logs, INFO for less verbose
+      - LOG_LEVEL=INFO # Set to DEBUG for detailed logs, INFO for less verbose
     networks:
       - mqtt-network
     depends_on:
@@ -25,18 +25,6 @@ services:
       - ./mqtt/mosquitto_data:/mosquitto/data
       - ./mqtt/mosquitto_config:/mosquitto/config
       - ./mqtt/mosquitto_log:/mosquitto/log
-    networks:
-      - mqtt-network
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: grumpybin
-      POSTGRES_PASSWORD: grumpybin
-      POSTGRES_DB: grumpybin_db
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data
     networks:
       - mqtt-network
 

@@ -95,21 +95,3 @@ class FileStorageBackend(StorageBackend):
             lines = file.readlines()
             logger.debug(f"Current lines in file: {lines}")
             return [line.strip() for line in lines if line.strip()]
-
-class PostgreSQLStorageBackend(StorageBackend):
-    def __init__(self, connection_string: str):
-        super().__init__(StorageBackendType.DATABASE)
-        self.connection_string = connection_string
-        # Initialize database connection here
-
-    def add_line(self, line: str) -> int:
-        # Implement adding a line to the PostgreSQL database
-        pass
-
-    def modify_line(self, key: str, new_line: str) -> int:
-        # Implement modifying a line in the PostgreSQL database
-        pass
-
-    def delete_line(self, key: str) -> int:
-        # Implement deleting a line from the PostgreSQL database
-        pass

@@ -3,7 +3,7 @@ import time
 import threading
 import pygame
 import logging
-from speech import play_line
+from speech import play_edge_tts
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -60,37 +60,47 @@ def play_audio():
             break
         time.sleep(0.1)
 
+def trigger_actions_guarded():
+    global is_active
+    if not is_active:
+        is_active = True
+        stop_event.clear()
+        def wrapped_play():
+            play_edge_tts()
+            rattle_solenoid()
+            global is_active
+            is_active = False
+        threading.Thread(target=wrapped_play, daemon=True).start()
+
 
 def trigger_actions():
     stop_event.clear()
     threading.Thread(target=rattle_solenoid, daemon=True).start()
-    threading.Thread(target=play_line, daemon=True).start()
+    threading.Thread(target=play_audio, daemon=True).start()
 
 
-# --- Hauptschleife ---
-try:
-    print("Starte Mülleimer mit Ultraschallsensor...")
-    last_trigger_time = 0
-    cooldown = 5  # Sekunden: Zeit zwischen zwei Aktivierungen
+def main():
+    try:
+        print("Starte Mülleimer mit Ultraschallsensor...")
 
-    global active
-    active = False
+        while True:
+            activate = detect_activation()
+            logger.debug(f"Aktiviere: {activate}")
 
-    while True:
-        activate = detect_activation()
-        logger.debug(f"Aktiviere: {activate}")
+            if activate:
+                logger.info("👀 Person erkannt! Aktiviere Reaktion.")
+                trigger_actions_guarded()
+            time.sleep(0.5)
 
-        if activate and not active:
-            active = True
-            logger.info("👀 Person erkannt! Aktiviere Reaktion.")
-            trigger_actions()
-        time.sleep(0.5)
+    except KeyboardInterrupt:
+        logger.info("Beendet durch Benutzer.")
 
-except KeyboardInterrupt:
-    logger.info("Beendet durch Benutzer.")
+    finally:
+        stop_event.set()
+        pygame.mixer.music.stop()
+        logger.info("GPIO aufgeräumt.")
 
-finally:
-    stop_event.set()
-    pygame.mixer.music.stop()
-    GPIO.cleanup()
-    logger.info("GPIO aufgeräumt.")
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    logger.info("Starte Hauptprogramm...")
+    main()
