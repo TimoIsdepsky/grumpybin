@@ -1,6 +1,6 @@
 services:
   mqtt-client:
-    image: timoisdepsky/grumpybin:latest
+    image: timoisdepsky/grumpybin-mqtt:latest
     container_name: mqtt-client
     restart: unless-stopped
     volumes:
